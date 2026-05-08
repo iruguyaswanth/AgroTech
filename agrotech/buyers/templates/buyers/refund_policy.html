@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Refund & Return Policy – AgroTech{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'buyers/refund_policy.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="page-wrapper narrow">
+  <div class="page-header">
+    <h2>Refund & Return Policy</h2>
+    <p>Last updated: January 2024</p>
+  </div>
+
+  <div class="policy-card">
+
+    <div class="policy-section">
+      <h3>1. Our Commitment</h3>
+      <p>AgroTech is committed to fair and transparent transactions between farmers and buyers. We take quality seriously. If you are not satisfied with your order, here's what you can do.</p>
+    </div>
+
+    <div class="policy-section">
+      <h3>2. When You Can Request a Refund</h3>
+      <ul class="policy-list">
+        <li>The produce received is significantly different from what was listed.</li>
+        <li>The order was not delivered within the expected timeframe.</li>
+        <li>The crop quality is poor, damaged, or not fresh.</li>
+        <li>You received the wrong item or wrong quantity.</li>
+      </ul>
+    </div>
+
+    <div class="policy-section">
+      <h3>3. How to Raise a Refund</h3>
+      <p>Contact us within <strong>48 hours</strong> of delivery. You can raise a dispute directly from your order tracking page. Attach clear photos of the received produce.</p>
+    </div>
+
+    <div class="policy-section">
+      <h3>4. Resolution Timeline</h3>
+      <p>Our team will review your complaint within <strong>3–5 working days</strong>. If the refund is approved, it will be credited to your original payment method within 7 working days.</p>
+    </div>
+
+    <div class="policy-section">
+      <h3>5. What is Not Covered</h3>
+      <ul class="policy-list">
+        <li>Refund requests made after 48 hours of delivery.</li>
+        <li>Cases where the buyer provided incorrect delivery address.</li>
+        <li>Minor variations in size, color, or shape of natural produce.</li>
+        <li>If you change your mind after placing an order (non-perishable exceptions apply).</li>
+      </ul>
+    </div>
+
+    <div class="policy-section">
+      <h3>6. Farmer Responsibility</h3>
+      <p>Farmers are expected to provide accurate product descriptions and maintain quality. Repeated complaints against a farmer may result in account suspension.</p>
+    </div>
+
+    <div class="policy-section">
+      <h3>7. Contact Support</h3>
+      <p>For any disputes or queries, email us at <strong>support@agrotech.in</strong> or write to us through your profile page.</p>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,35 @@
+/* Styles for register.html */
+.auth-page {
+  max-width: 520px;
+  margin: 52px auto 72px;
+  padding: 32px;
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.auth-header h2 {
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+.auth-header p {
+  color: var(--gray-text);
+}
+.auth-form .form-group {
+  margin-bottom: 18px;
+}
+.auth-form input,
+.auth-form textarea,
+.auth-form select {
+  width: 100%;
+  border: 1px solid var(--gray);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  background: var(--white);
+}
+.auth-footer {
+  text-align: center;
+  color: var(--gray-text);
+}
+.auth-footer a {
+  color: var(--green);
+}

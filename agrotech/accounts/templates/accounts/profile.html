@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}My Profile – AgroTech{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'accounts/profile.css' %}?v=7" />
+{% endblock %}
+
+{% block content %}
+<div class="page-wrapper">
+  <div class="profile-page">
+
+    <!-- Left: Profile Card -->
+    <div class="profile-card">
+      <div class="profile-photo-wrap">
+        {% if profile.profile_photo %}
+          <img src="{{ profile.profile_photo.url }}" alt="Profile Photo" class="profile-photo" />
+        {% else %}
+          <div class="profile-photo-placeholder">{{ user.first_name|first|upper|default:user.username|first|upper }}</div>
+        {% endif %}
+      </div>
+
+      <h3>{{ user.get_full_name|default:user.username }}</h3>
+      <span class="role-tag role-{{ profile.role }}">{{ profile.get_role_display }}</span>
+
+      {% if profile.is_verified %}
+        <div class="verified-row">
+          <span class="verified-badge-big">✔ KYC Verified</span>
+        </div>
+      {% endif %}
+
+      <div class="profile-meta">
+        <p>📧 {{ user.email }}</p>
+        {% if profile.phone %}<p>📞 {{ profile.phone }}</p>{% endif %}
+        {% if profile.address %}<p>📍 {{ profile.address }}</p>{% endif %}
+        <p>📅 Joined {{ profile.joined_on|date:"d M Y" }}</p>
+      </div>
+
+      <div class="profile-actions">
+        <a href="{% url 'accounts:edit_profile' %}" class="btn btn-outline">Edit Profile</a>
+        {% if profile.kyc_status != 'approved' %}
+          <a href="{% url 'accounts:kyc_upload' %}" class="btn btn-orange">Upload KYC</a>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Right: KYC Status + Stats -->
+    <div class="profile-right">
+
+      <!-- KYC Status Box -->
+      <div class="info-card">
+        <h4>KYC Verification Status</h4>
+
+        {% if profile.kyc_status == 'not_submitted' %}
+          <div class="kyc-status kyc-not-submitted">
+            <span class="kyc-icon">📄</span>
+            <div>
+              <strong>Not Submitted</strong>
+              <p>Submit your ID proof to get the Verified badge.</p>
+              <a href="{% url 'accounts:kyc_upload' %}" class="btn btn-orange btn-sm">Submit KYC Now</a>
+            </div>
+          </div>
+
+        {% elif profile.kyc_status == 'pending' %}
+          <div class="kyc-status kyc-pending">
+            <span class="kyc-icon">⏳</span>
+            <div>
+              <strong>Under Review</strong>
+              <p>Submitted on {{ profile.kyc_submitted_on|date:"d M Y" }}. We'll update you within 48 hours.</p>
+            </div>
+          </div>
+
+        {% elif profile.kyc_status == 'approved' %}
+          <div class="kyc-status kyc-approved">
+            <span class="kyc-icon">✅</span>
+            <div>
+              <strong>KYC Approved</strong>
+              <p>Your identity is verified. You now have the Verified badge.</p>
+            </div>
+          </div>
+
+        {% elif profile.kyc_status == 'rejected' %}
+          <div class="kyc-status kyc-rejected">
+            <span class="kyc-icon">❌</span>
+            <div>
+              <strong>KYC Rejected</strong>
+              {% if profile.kyc_rejection_reason %}
+                <p>Reason: {{ profile.kyc_rejection_reason }}</p>
+              {% endif %}
+              <a href="{% url 'accounts:kyc_upload' %}" class="btn btn-orange btn-sm">Resubmit KYC</a>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Role-specific quick links -->
+      <div class="info-card">
+        <h4>Quick Links</h4>
+        <div class="quick-links">
+          {% if profile.role == 'farmer' %}
+            <a href="{% url 'farmers:dashboard' %}" class="quick-link-item">📊 Dashboard</a>
+            <a href="{% url 'farmers:my_crops' %}" class="quick-link-item">🌱 My Crops</a>
+            <a href="{% url 'farmers:orders' %}" class="quick-link-item">📦 Orders</a>
+            <a href="{% url 'farmers:earnings' %}" class="quick-link-item">💰 Earnings</a>
+          {% else %}
+            <a href="{% url 'buyers:home' %}" class="quick-link-item">🛒 Browse Crops</a>
+            <a href="{% url 'buyers:my_orders' %}" class="quick-link-item">📦 My Orders</a>
+            <a href="{% url 'buyers:wishlist' %}" class="quick-link-item">❤️ Wishlist</a>
+            <a href="{% url 'buyers:cart' %}" class="quick-link-item">🛍️ Cart</a>
+          {% endif %}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,35 @@
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.filter-btn {
+  padding: 0.65rem 1rem;
+  border-radius: 999px;
+}
+
+.filter-btn.active {
+  background: var(--primary);
+  color: white;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+.data-table th,
+.data-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #eceff3;
+}
+
+.status-badge {
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+}
+
+.text-muted {
+  color: #7d8596;
+}

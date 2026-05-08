@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Track Order #{{ order.id }} – AgroTech{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'buyers/track_order.css' %}?v=1" />
+{% endblock %}
+
+{% block content %}
+<div class="page-wrapper narrow">
+  <div class="page-header">
+    <h2>Order #{{ order.id }}</h2>
+    <a href="{% url 'buyers:my_orders' %}" class="btn btn-outline-sm">← My Orders</a>
+  </div>
+
+  <!-- Order Status Timeline -->
+  <div class="section-card">
+    <h4>Order Timeline</h4>
+    <div class="order-timeline">
+      {% for step, done in steps %}
+        <div class="timeline-step {% if done %}done{% endif %}">
+          <div class="timeline-dot"></div>
+          <div class="timeline-label">{{ step|title }}</div>
+        </div>
+      {% endfor %}
+    </div>
+
+    {% if order.status == 'cancelled' %}
+      <div class="info-box info-red" style="margin-top:16px;">
+        This order was cancelled.
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Order Details -->
+  <div class="order-detail-card">
+    <h4>Order Details</h4>
+    <div class="order-detail-grid">
+      <div>
+        <p class="label">Crop</p>
+        <p class="value"><a href="{% url 'buyers:crop_detail' order.crop.id %}">{{ order.crop.name }}</a></p>
+      </div>
+      <div>
+        <p class="label">Farmer</p>
+        <p class="value">{{ order.crop.farmer.get_full_name|default:order.crop.farmer.username }}</p>
+      </div>
+      <div>
+        <p class="label">Quantity</p>
+        <p class="value">{{ order.quantity_kg }} kg</p>
+      </div>
+      <div>
+        <p class="label">Amount Paid</p>
+        <p class="value"><strong>₹{{ order.total_price }}</strong></p>
+      </div>
+      <div>
+        <p class="label">Ordered On</p>
+        <p class="value">{{ order.placed_on|date:"d M Y, h:i A" }}</p>
+      </div>
+      <div>
+        <p class="label">Status</p>
+        <p class="value"><span class="status-badge status-{{ order.status }}">{{ order.get_status_display }}</span></p>
+      </div>
+    </div>
+
+    <div style="margin-top: 12px;">
+      <p class="label">Delivery Address</p>
+      <p class="value">{{ order.delivery_address }}</p>
+    </div>
+
+    {% if order.note %}
+    <div style="margin-top: 12px;">
+      <p class="label">Your Note</p>
+      <p class="value">{{ order.note }}</p>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Review Section -->
+  {% if order.status == 'delivered' %}
+    <div class="section-card">
+      {% if has_review %}
+        <div class="info-box info-green">
+          ✅ You have already reviewed this order.
+          <div class="stars" style="margin-top: 8px;">
+            {% for i in "12345" %}
+              <span class="star {% if forloop.counter <= order.review.rating %}filled{% endif %}">★</span>
+            {% endfor %}
+          </div>
+          {% if order.review.comment %}
+            <p style="margin-top: 8px;">{{ order.review.comment }}</p>
+          {% endif %}
+        </div>
+      {% else %}
+        <h4>Rate Your Experience</h4>
+        <p>Share your feedback about this crop and farmer.</p>
+        <a href="{% url 'buyers:give_review' order.id %}" class="btn btn-orange">Write a Review</a>
+      {% endif %}
+    </div>
+  {% endif %}
+
+  <!-- Refund Policy Link -->
+  <div class="text-center" style="margin-top: 16px;">
+    <a href="{% url 'buyers:refund_policy' %}" class="text-link">View Refund & Return Policy</a>
+  </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Review KYC – Admin{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'admin_panel/kyc_detail.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="page-wrapper narrow">
+  <div class="page-header">
+    <h2>Review KYC – {{ profile.user.get_full_name|default:profile.user.username }}</h2>
+    <a href="{% url 'admin_panel:kyc_list' %}" class="btn btn-outline-sm">← Back</a>
+  </div>
+
+  <div class="order-detail-card">
+    <div class="order-detail-grid">
+      <div><p class="label">Full Name</p><p class="value">{{ profile.user.get_full_name|default:"—" }}</p></div>
+      <div><p class="label">Username</p><p class="value">{{ profile.user.username }}</p></div>
+      <div><p class="label">Email</p><p class="value">{{ profile.user.email }}</p></div>
+      <div><p class="label">Role</p><p class="value"><span class="role-tag role-{{ profile.role }}">{{ profile.get_role_display }}</span></p></div>
+      <div><p class="label">Phone</p><p class="value">{{ profile.phone|default:"—" }}</p></div>
+      <div><p class="label">Document Type</p><p class="value">{{ profile.kyc_document_type|default:"—" }}</p></div>
+      <div><p class="label">Submitted On</p><p class="value">{{ profile.kyc_submitted_on|date:"d M Y, h:i A"|default:"—" }}</p></div>
+      <div><p class="label">Current Status</p><p class="value"><span class="status-badge status-{{ profile.kyc_status }}">{{ profile.get_kyc_status_display }}</span></p></div>
+    </div>
+
+    {% if profile.kyc_document %}
+      <div style="margin-top: 20px;">
+        <p class="label">Uploaded Document</p>
+        <a href="{{ profile.kyc_document.url }}" target="_blank">
+          <img src="{{ profile.kyc_document.url }}" alt="KYC Document"
+               style="max-width: 100%; max-height: 400px; border-radius: 8px; border: 1px solid #eee;" />
+        </a>
+        <p><a href="{{ profile.kyc_document.url }}" target="_blank" class="text-link">Open in full screen</a></p>
+      </div>
+    {% else %}
+      <div class="info-box info-yellow" style="margin-top: 16px;">No document uploaded yet.</div>
+    {% endif %}
+  </div>
+
+  {% if profile.kyc_status == 'pending' %}
+    <div class="form-card" style="margin-top: 20px;">
+      <h4>Make a Decision</h4>
+
+      <form method="POST">
+        {% csrf_token %}
+
+        <div class="kyc-decision-row">
+          <button type="submit" name="action" value="approve" class="btn btn-green btn-lg">
+            ✅ Approve KYC
+          </button>
+        </div>
+
+        <div style="margin-top: 16px;">
+          <div class="form-group">
+            <label>Rejection Reason (required if rejecting)</label>
+            <textarea name="rejection_reason" rows="3" placeholder="Explain why the document is rejected..."></textarea>
+          </div>
+          <button type="submit" name="action" value="reject" class="btn btn-red">
+            ❌ Reject KYC
+          </button>
+        </div>
+      </form>
+    </div>
+  {% else %}
+    <div class="info-box info-blue" style="margin-top: 16px;">
+      This KYC has already been reviewed. Status: <strong>{{ profile.get_kyc_status_display }}</strong>
+      {% if profile.kyc_reviewed_on %}on {{ profile.kyc_reviewed_on|date:"d M Y" }}{% endif %}.
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

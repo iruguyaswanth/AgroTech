@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Manage Reviews – Admin{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'admin_panel/reviews_list.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="page-wrapper">
+  <div class="page-header">
+    <h2>Manage Reviews</h2>
+  </div>
+
+  <div class="filter-row">
+    <a href="?show=flagged" class="filter-btn {% if show == 'flagged' %}active{% endif %}">Flagged Only</a>
+    <a href="?show=all" class="filter-btn {% if show == 'all' %}active{% endif %}">All Reviews</a>
+  </div>
+
+  {% if reviews %}
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Buyer</th>
+            <th>Crop</th>
+            <th>Rating</th>
+            <th>Comment</th>
+            <th>Date</th>
+            <th>Flagged</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for review in reviews %}
+          <tr>
+            <td>{{ review.buyer.get_full_name|default:review.buyer.username }}</td>
+            <td>{{ review.crop.name }}</td>
+            <td>
+              <div class="stars-sm">
+                {% for i in "12345" %}
+                  <span class="star {% if forloop.counter <= review.rating %}filled{% endif %}">★</span>
+                {% endfor %}
+              </div>
+            </td>
+            <td>{{ review.comment|truncatechars:60|default:"—" }}</td>
+            <td>{{ review.created_on|date:"d M Y" }}</td>
+            <td>{% if review.is_flagged %}🚩{% else %}—{% endif %}</td>
+            <td>
+              <form method="POST" action="{% url 'admin_panel:delete_review' review.id %}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-red-sm" onclick="return confirm('Delete this review?')">Delete</button>
+              </form>
+              {% if review.is_flagged %}
+                <a href="{% url 'admin_panel:unflag_review' review.id %}" class="btn btn-outline-sm">Unflag</a>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="empty-state"><p>No reviews to show.</p></div>
+  {% endif %}
+</div>
+{% endblock %}

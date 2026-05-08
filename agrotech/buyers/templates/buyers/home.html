@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Browse Fresh Crops – AgroTech{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'buyers/home.css' %}?v=4" />
+{% endblock %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<div class="hero-section">
+  <div class="hero-text">
+    <h1>Fresh from the Farm,<br />Right to Your Door</h1>
+    <p>Buy directly from verified farmers. No middlemen. Fair prices.</p>
+  </div>
+</div>
+
+<!-- Compact Filter Bar -->
+<div class="page-wrapper">
+  <div class="filter-bar">
+
+    <form method="GET" class="filter-inline-form">
+
+      <!-- Search -->
+      <input type="search" name="q" value="{{ query }}" placeholder="Search crops..." />
+
+      <!-- Search Button -->
+      <button type="submit" class="btn-green">Search</button>
+
+      <!-- Sort -->
+      <div class="dropdown">
+        <button type="button" class="dropdown-btn">Sort ▾</button>
+        <div class="dropdown-menu">
+          <a href="?sort=newest">Newest</a>
+          <a href="?sort=price_asc">Price Low → High</a>
+          <a href="?sort=price_desc">Price High → Low</a>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div class="dropdown">
+        <button type="button" class="dropdown-btn">Filters ▾</button>
+
+        <div class="dropdown-menu">
+
+          <select name="category">
+            <option value="">All Categories</option>
+            {% for val, label in categories %}
+              <option value="{{ val }}" {% if category == val %}selected{% endif %}>
+                {{ label }}
+              </option>
+            {% endfor %}
+          </select>
+
+          <input type="text" name="location" value="{{ location }}" placeholder="Location" />
+          <input type="number" name="min_price" value="{{ min_price }}" placeholder="Min ₹/kg" />
+          <input type="number" name="max_price" value="{{ max_price }}" placeholder="Max ₹/kg" />
+
+          <button type="submit" class="btn-green">Apply</button>
+        </div>
+      </div>
+
+      <!-- Clear -->
+      <a href="{% url 'buyers:home' %}" class="btn-outline">Clear</a>
+
+    </form>
+
+  </div>
+
+  <!-- Results Info -->
+  <div class="results-info">
+    <span>{{ crops|length }} crop{{ crops|length|pluralize }} found</span>
+    {% if query %}<span>for "<strong>{{ query }}</strong>"</span>{% endif %}
+    {% if category %}<span>in <strong>{{ category }}</strong></span>{% endif %}
+  </div>
+
+  <!-- Crop Grid -->
+  {% if crops %}
+  <div class="crop-grid">
+    {% for crop in crops %}
+    <a href="{% url 'buyers:crop_detail' crop.id %}" class="crop-card-link">
+      <div class="crop-card">
+
+        <div class="crop-img-wrap">
+          {% if crop.image %}
+          <img src="{{ crop.image.url }}" alt="{{ crop.name }}" class="crop-img" />
+          {% else %}
+          <div class="crop-img-placeholder">🌾</div>
+          {% endif %}
+          <span class="category-chip">{{ crop.get_category_display }}</span>
+        </div>
+
+        <div class="crop-info">
+          <h4>{{ crop.name }}</h4>
+
+          <p class="crop-farmer">
+            by {{ crop.farmer.get_full_name|default:crop.farmer.username }}
+            {% if crop.farmer.profile.is_verified %}
+            <span class="verified-badge">✔</span>
+            {% endif %}
+          </p>
+
+          <p class="crop-location">📍 {{ crop.location }}</p>
+          <p class="crop-desc">{{ crop.description|truncatechars:80 }}</p>
+
+          <div class="crop-bottom-row">
+            <strong class="crop-price">₹{{ crop.price_per_kg }}/kg</strong>
+            <span class="crop-qty">{{ crop.quantity_kg }} kg left</span>
+          </div>
+
+          {% if crop.average_rating %}
+          <div class="crop-rating">⭐ {{ crop.average_rating }}</div>
+          {% endif %}
+        </div>
+
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <div class="empty-icon">🔍</div>
+    <h3>No crops found</h3>
+    <p>Try adjusting your search or filters.</p>
+    <a href="{% url 'buyers:home' %}" class="btn-outline">Clear Filters</a>
+  </div>
+  {% endif %}
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,168 @@
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+  flex-wrap: wrap;
+}
+
+.page-header h1,
+.page-header h2,
+.page-header h3 {
+  margin: 0;
+}
+
+.crop-detail-layout {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 2rem;
+}
+
+.crop-detail-image-wrap {
+  border-radius: 18px;
+  overflow: hidden;
+  background: #f8fafc;
+}
+
+.crop-detail-image {
+  width: 100%;
+  display: block;
+  object-fit: cover;
+  aspect-ratio: 4 / 3;
+}
+
+.crop-detail-placeholder {
+  display: grid;
+  place-items: center;
+  min-height: 280px;
+  font-size: 3rem;
+  color: #8a9bb3;
+}
+
+.crop-detail-top {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.category-tag,
+.verified-badge-sm {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.75rem;
+  border-radius: 999px;
+  background: #eef4ff;
+  font-size: 0.9rem;
+}
+
+.farmer-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 1rem 0;
+  color: var(--text-muted);
+}
+
+.rating-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.stars {
+  display: inline-flex;
+  gap: 0.2rem;
+}
+
+.star {
+  color: #d8d8d8;
+}
+
+.star.filled {
+  color: #ffb400;
+}
+
+.price-qty-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.price-box {
+  padding: 1rem;
+  border-radius: 16px;
+  background: #f7fbff;
+}
+
+.price-label {
+  display: block;
+  color: var(--text-muted);
+  margin-bottom: 0.35rem;
+}
+
+.price-value {
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 1.5rem 0;
+}
+
+.detail-actions .btn {
+  min-width: 175px;
+}
+
+.farmer-info-box {
+  padding: 1.25rem;
+  border-radius: 18px;
+  background: #f8fafc;
+  margin-top: 1.5rem;
+}
+
+.crop-description {
+  margin: 1.5rem 0;
+}
+
+.section-card.reviews-section {
+  margin-top: 2rem;
+}
+
+.review-card {
+  padding: 1rem;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: var(--shadow-soft);
+  margin-bottom: 1rem;
+}
+
+.review-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.75rem;
+}
+
+.review-date {
+  color: var(--text-muted);
+}
+
+.review-comment {
+  margin: 0;
+  color: var(--text-dark);
+}
+
+.empty-text {
+  color: var(--text-muted);
+}

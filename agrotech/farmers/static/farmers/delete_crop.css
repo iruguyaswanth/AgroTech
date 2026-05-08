@@ -1,0 +1,19 @@
+.confirm-card {
+  padding: 1.75rem;
+  border-radius: 18px;
+  background: var(--surface);
+  text-align: center;
+}
+
+.confirm-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.confirm-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 1.5rem;
+}

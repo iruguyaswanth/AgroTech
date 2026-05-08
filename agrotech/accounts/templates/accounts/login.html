@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Login – AgroTech{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'accounts/login.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+  <div class="auth-card">
+
+    <div class="auth-header">
+      <h2>Welcome Back</h2>
+      <p>Login to your AgroTech account.</p>
+    </div>
+
+    <form method="POST" class="auth-form">
+      {% csrf_token %}
+
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" name="username" placeholder="Your email address" />
+      </div>
+
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" name="password" placeholder="Your password" />
+      </div>
+
+      <div class="form-group forgot-row">
+        <a href="{% url 'accounts:forgot_password' %}">Forgot password?</a>
+      </div>
+
+      <button type="submit" class="btn btn-green btn-full">Login</button>
+    </form>
+
+    <div class="auth-footer">
+      New to AgroTech? <a href="{% url 'accounts:register' %}">Create an account</a>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

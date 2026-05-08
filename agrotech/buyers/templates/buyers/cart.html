@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}My Cart – AgroTech{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'buyers/cart.css' %}?v=12" />
+{% endblock %}
+
+{% block content %}
+<div class="page-wrapper narrow">
+  <div class="page-header">
+    <h2>My Cart</h2>
+  </div>
+
+  {% if cart_items %}
+    <div class="cart-list">
+      {% for item in cart_items %}
+        <div class="cart-item">
+          <div class="cart-item-img">
+            {% if item.crop.image %}
+              <img src="{{ item.crop.image.url }}" alt="{{ item.crop.name }}" />
+            {% else %}
+              <div class="cart-img-placeholder">🌾</div>
+            {% endif %}
+          </div>
+
+          <div class="cart-item-info">
+            <h4><a href="{% url 'buyers:crop_detail' item.crop.id %}">{{ item.crop.name }}</a></h4>
+            <p class="text-muted">by {{ item.crop.farmer.get_full_name|default:item.crop.farmer.username }}</p>
+            <p>📍 {{ item.crop.location }}</p>
+            <p>₹{{ item.crop.price_per_kg }}/kg × {{ item.quantity_kg }} kg</p>
+          </div>
+
+          <div class="cart-item-right">
+            <div class="cart-subtotal">₹{{ item.subtotal }}</div>
+            <a href="{% url 'buyers:place_order' item.crop.id %}" class="btn btn-green-sm">Order Now</a>
+            <form method="POST" action="{% url 'buyers:remove_from_cart' item.id %}">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-red-sm">Remove</button>
+            </form>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="cart-total-row">
+      <span>Grand Total</span>
+      <strong class="cart-grand-total">₹{{ grand_total }}</strong>
+    </div>
+
+  {% else %}
+    <div class="empty-state big">
+      <div class="empty-icon">🛒</div>
+      <h3>Your cart is empty</h3>
+      <p>Browse crops and add them to your cart.</p>
+      <a href="{% url 'buyers:home' %}" class="btn btn-green">Browse Crops</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

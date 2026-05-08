@@ -1,0 +1,20 @@
+.policy-card {
+  padding: 1.5rem;
+  border-radius: 18px;
+  background: var(--surface);
+  box-shadow: var(--shadow-soft);
+}
+
+.policy-section {
+  margin-bottom: 1.4rem;
+}
+
+.policy-list {
+  list-style: disc inside;
+  margin: 0.75rem 0 0 0;
+  color: var(--text-muted);
+}
+
+.policy-list li {
+  margin-bottom: 0.65rem;
+}

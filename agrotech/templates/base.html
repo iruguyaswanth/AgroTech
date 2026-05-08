@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% load static %}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}AgroTech{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/main.css' %}?v=7" />
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <a href="/" class="logo">🌾 AgroTech</a>
+
+  <ul class="nav-links">
+    {% if user.is_authenticated %}
+      {% with profile=user.profile %}
+
+        {% if user.is_superuser %}
+          <li><a href="{% url 'admin_panel:dashboard' %}" class="{% block admin_active %}{% endblock %}">Dashboard</a></li>
+          <li><a href="{% url 'admin_panel:kyc_list' %}">KYC</a></li>
+          <li><a href="{% url 'admin_panel:users_list' %}">Users</a></li>
+          <li><a href="{% url 'admin_panel:orders_list' %}">Orders</a></li>
+          <li><a href="{% url 'admin_panel:reviews_list' %}">Reviews</a></li>
+
+        {% elif profile.role == 'farmer' %}
+          <li><a href="{% url 'farmers:dashboard' %}">Dashboard</a></li>
+          <li><a href="{% url 'farmers:my_crops' %}">My Crops</a></li>
+          <li><a href="{% url 'farmers:orders' %}">Orders</a></li>
+          <li><a href="{% url 'farmers:earnings' %}">Earnings</a></li>
+          <li><a href="{% url 'farmers:reviews' %}">Reviews</a></li>
+
+        {% elif profile.role == 'buyer' %}
+          <li><a href="{% url 'buyers:home' %}">Browse</a></li>
+          <li><a href="{% url 'buyers:cart' %}">Cart</a></li>
+          <li><a href="{% url 'buyers:my_orders' %}">My Orders</a></li>
+          <li><a href="{% url 'buyers:wishlist' %}">Wishlist</a></li>
+        {% endif %}
+
+      {% endwith %}
+
+      <li class="nav-divider"></li>
+      <li>
+        <a href="{% url 'accounts:profile' %}" class="nav-profile">
+          👤 {{ user.first_name|default:user.username }}
+          {% if user.profile.is_verified %}
+            <span class="verified-badge" title="KYC Verified">✔</span>
+          {% endif %}
+        </a>
+      </li>
+      <li><a href="{% url 'accounts:logout' %}" class="btn btn-outline-sm">Logout</a></li>
+
+    {% else %}
+      <li><a href="{% url 'buyers:home' %}">Browse Crops</a></li>
+      <li><a href="{% url 'accounts:login' %}" class="btn btn-outline-sm">Login</a></li>
+      <li><a href="{% url 'accounts:register' %}" class="btn btn-green-sm">Sign Up</a></li>
+    {% endif %}
+  </ul>
+
+  <!-- Mobile hamburger -->
+  <button class="hamburger" onclick="toggleMobileMenu()">☰</button>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobile-menu">
+  {% if user.is_authenticated %}
+    {% with profile=user.profile %}
+      {% if profile.role == 'farmer' %}
+        <a href="{% url 'farmers:dashboard' %}">Dashboard</a>
+        <a href="{% url 'farmers:my_crops' %}">My Crops</a>
+        <a href="{% url 'farmers:orders' %}">Orders</a>
+        <a href="{% url 'farmers:earnings' %}">Earnings</a>
+      {% elif profile.role == 'buyer' %}
+        <a href="{% url 'buyers:home' %}">Browse</a>
+        <a href="{% url 'buyers:cart' %}">Cart</a>
+        <a href="{% url 'buyers:my_orders' %}">My Orders</a>
+        <a href="{% url 'buyers:wishlist' %}">Wishlist</a>
+      {% endif %}
+    {% endwith %}
+    <a href="{% url 'accounts:profile' %}">Profile</a>
+    <a href="{% url 'accounts:logout' %}">Logout</a>
+  {% else %}
+    <a href="{% url 'buyers:home' %}">Browse Crops</a>
+    <a href="{% url 'accounts:login' %}">Login</a>
+    <a href="{% url 'accounts:register' %}">Sign Up</a>
+  {% endif %}
+</div>
+
+<!-- Flash Messages -->
+{% if messages %}
+<div class="flash-messages">
+  {% for msg in messages %}
+    <div class="flash flash-{{ msg.tags }}">
+      {{ msg }}
+      <button onclick="this.parentElement.remove()">×</button>
+    </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<!-- Main Content -->
+<main class="main-content">
+  {% block content %}{% endblock %}
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <span class="logo">🌾 AgroTech</span>
+      <p>Connecting farmers and buyers directly. Fresh from the farm, fair for everyone.</p>
+    </div>
+    <div class="footer-links">
+      <h4>Platform</h4>
+      <a href="{% url 'buyers:home' %}">Browse Crops</a>
+      <a href="{% url 'accounts:register' %}">Join as Farmer</a>
+      <a href="{% url 'buyers:refund_policy' %}">Refund Policy</a>
+    </div>
+    <div class="footer-links">
+      <h4>Account</h4>
+      <a href="{% url 'accounts:login' %}">Login</a>
+      <a href="{% url 'accounts:register' %}">Register</a>
+      <a href="{% url 'accounts:kyc_upload' %}">KYC Verification</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2024 AgroTech. Built to empower farmers across India.</p>
+  </div>
+</footer>
+
+<script src="{% static 'js/main.js' %}" ></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Earnings – AgroTech{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'farmers/earnings.css' %}?v=2" />
+{% endblock %}
+
+{% block content %}
+<div class="page-wrapper">
+  <div class="page-header">
+    <h2>Earnings Overview</h2>
+  </div>
+
+  <!-- Total Earnings Box -->
+  <div class="earnings-highlight">
+    <div class="earnings-total">
+      <span class="earnings-label">Total Earnings (Delivered Orders)</span>
+      <span class="earnings-amount">₹{{ total }}</span>
+    </div>
+  </div>
+
+  <!-- Earnings per Crop -->
+  {% if crop_earnings %}
+    <div class="section-card">
+      <h3>Earnings by Crop</h3>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Crop Name</th>
+              <th>Total Earned (₹)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for crop_name, amount in crop_earnings.items %}
+            <tr>
+              <td>{{ crop_name }}</td>
+              <td><strong>₹{{ amount }}</strong></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  {% endif %}
+
+  <!-- Delivered Orders Table -->
+  <div class="section-card">
+    <h3>All Delivered Orders</h3>
+
+    {% if orders %}
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Order #</th>
+              <th>Buyer</th>
+              <th>Crop</th>
+              <th>Qty (kg)</th>
+              <th>Earned (₹)</th>
+              <th>Delivered On</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for order in orders %}
+            <tr>
+              <td>#{{ order.id }}</td>
+              <td>{{ order.buyer.get_full_name|default:order.buyer.username }}</td>
+              <td>{{ order.crop.name }}</td>
+              <td>{{ order.quantity_kg }}</td>
+              <td><strong>₹{{ order.total_price }}</strong></td>
+              <td>{{ order.updated_on|date:"d M Y" }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <p>No delivered orders yet. Earnings from completed orders will appear here.</p>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

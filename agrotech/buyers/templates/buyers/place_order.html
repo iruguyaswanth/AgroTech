@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Place Order – AgroTech{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'buyers/place_order.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="page-wrapper narrow">
+  <div class="page-header">
+    <h2>Place Your Order</h2>
+    <a style="color:white" href="{% url 'buyers:crop_detail' crop.id %}" class="btn btn-outline-sm">← Back</a>
+  </div>
+
+  <!-- Crop Summary -->
+  <div class="order-summary-card">
+    <div class="order-crop-info">
+      {% if crop.image %}
+        <img src="{{ crop.image.url }}" alt="{{ crop.name }}" class="order-crop-thumb" />
+      {% endif %}
+      <div>
+        <h4 style="color:green">{{ crop.name }}</h4>
+        <p style="color:tomato">by {{ crop.farmer.get_full_name|default:crop.farmer.username }}</p>
+        <p style="color:brown">📍 {{ crop.location }}</p>
+        <p class="crop-price" style="color:white">₹{{ crop.price_per_kg }} per kg</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Order Form -->
+  <div class="form-card">
+    <form method="POST" class="main-form" id="order-form">
+      {% csrf_token %}
+
+      <div class="form-group">
+        <label style="color:white">Quantity (kg) *</label>
+        <input type="number" name="quantity_kg" id="qty-input" step="0.5" min="0.5"
+               max="{{ crop.quantity_kg }}" placeholder="How many kg?" required />
+        <small style="color:white">Maximum available: {{ crop.quantity_kg }} kg</small>
+        {% if form.quantity_kg.errors %}<span class="field-error">{{ form.quantity_kg.errors.0 }}</span>{% endif %}
+      </div>
+
+      <!-- Live total calculation -->
+      <div class="live-total-box" id="live-total" style="display:none;">
+        <span>Estimated Total:</span>
+        <strong id="total-amount">₹0</strong>
+      </div>
+
+      <div class="form-group">
+        <label style="color:white">Delivery Address *</label>
+        <textarea name="delivery_address" rows="3" placeholder="Full delivery address" required>{{ form.initial.delivery_address }}</textarea>
+        {% if form.delivery_address.errors %}<span class="field-error">{{ form.delivery_address.errors.0 }}</span>{% endif %}
+      </div>
+
+      <div class="form-group">
+        <label style="color:white">Phone Number *</label>
+        <input type="text" name="phone" placeholder="Contact number" required value="{{ form.initial.phone }}" />
+        {% if form.phone.errors %}<span class="field-error">{{ form.phone.errors.0 }}</span>{% endif %}
+      </div>
+
+      <div class="form-group">
+        <label style="color:white">Note to Farmer (Optional)</label>
+        <textarea name="note" rows="2" placeholder="Any special instructions?"></textarea>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-green btn-lg">Confirm Order</button>
+        <a style="color:white" href="{% url 'buyers:home' %}" class="btn btn-outline">Cancel</a>
+      </div>
+    </form>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  const pricePerKg = {{ crop.price_per_kg }};
+  const qtyInput = document.getElementById('qty-input');
+  const liveTotal = document.getElementById('live-total');
+  const totalAmount = document.getElementById('total-amount');
+
+  qtyInput.addEventListener('input', function() {
+    const qty = parseFloat(this.value) || 0;
+    if (qty > 0) {
+      liveTotal.style.display = 'flex';
+      totalAmount.textContent = '₹' + (qty * pricePerKg).toFixed(2);
+    } else {
+      liveTotal.style.display = 'none';
+    }
+  });
+</script>
+{% endblock %}

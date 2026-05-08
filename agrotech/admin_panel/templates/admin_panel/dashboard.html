@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Admin Dashboard – AgroTech{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'admin_panel/dashboard.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="page-wrapper">
+  <div class="dashboard-header">
+    <div>
+      <h2>Admin Dashboard</h2>
+      <p>Platform overview and management tools.</p>
+    </div>
+  </div>
+
+  <!-- Stats Row -->
+  <div class="stats-row">
+    <div class="stat-box stat-blue">
+      <div class="stat-number">{{ total_users }}</div>
+      <div class="stat-label">Total Users</div>
+    </div>
+    <div class="stat-box stat-green">
+      <div class="stat-number">{{ total_farmers }}</div>
+      <div class="stat-label">Farmers</div>
+    </div>
+    <div class="stat-box stat-orange">
+      <div class="stat-number">{{ total_buyers }}</div>
+      <div class="stat-label">Buyers</div>
+    </div>
+    <div class="stat-box stat-yellow">
+      <div class="stat-number">{{ pending_kyc }}</div>
+      <div class="stat-label">KYC Pending</div>
+    </div>
+    <div class="stat-box stat-purple">
+      <div class="stat-number">{{ total_crops }}</div>
+      <div class="stat-label">Crop Listings</div>
+    </div>
+    <div class="stat-box stat-teal">
+      <div class="stat-number">₹{{ total_revenue }}</div>
+      <div class="stat-label">Total Revenue</div>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="quick-nav-row">
+    <a href="{% url 'admin_panel:kyc_list' %}" class="quick-nav-card">
+      <span class="qn-icon">🪪</span>
+      <span>KYC Requests</span>
+      {% if pending_kyc > 0 %}<span class="badge-count">{{ pending_kyc }}</span>{% endif %}
+    </a>
+    <a href="{% url 'admin_panel:users_list' %}" class="quick-nav-card">
+      <span class="qn-icon">👥</span>
+      <span>Manage Users</span>
+    </a>
+    <a href="{% url 'admin_panel:reviews_list' %}" class="quick-nav-card">
+      <span class="qn-icon">⭐</span>
+      <span>Reviews</span>
+      {% if flagged_reviews > 0 %}<span class="badge-count">{{ flagged_reviews }}</span>{% endif %}
+    </a>
+    <a href="{% url 'admin_panel:orders_list' %}" class="quick-nav-card">
+      <span class="qn-icon">📦</span>
+      <span>All Orders</span>
+    </a>
+    <a href="{% url 'admin_panel:disputes' %}" class="quick-nav-card">
+      <span class="qn-icon">⚖️</span>
+      <span>Disputes</span>
+    </a>
+  </div>
+
+  <!-- Recent Orders -->
+  <div class="section-card">
+    <div class="section-card-header">
+      <h3>Recent Orders</h3>
+      <a href="{% url 'admin_panel:orders_list' %}" class="link-more">View All →</a>
+    </div>
+
+    {% if recent_orders %}
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Order #</th>
+              <th>Buyer</th>
+              <th>Crop</th>
+              <th>Farmer</th>
+              <th>Qty (kg)</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for order in recent_orders %}
+            <tr>
+              <td>#{{ order.id }}</td>
+              <td>{{ order.buyer.get_full_name|default:order.buyer.username }}</td>
+              <td>{{ order.crop.name }}</td>
+              <td>{{ order.crop.farmer.get_full_name|default:order.crop.farmer.username }}</td>
+              <td>{{ order.quantity_kg }}</td>
+              <td>₹{{ order.total_price }}</td>
+              <td><span class="status-badge status-{{ order.status }}">{{ order.get_status_display }}</span></td>
+              <td>{{ order.placed_on|date:"d M Y" }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="empty-state"><p>No orders yet.</p></div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}All Orders – Admin{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'admin_panel/orders_list.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="page-wrapper">
+  <div class="page-header">
+    <h2>All Orders</h2>
+  </div>
+
+  <div class="filter-row">
+    <a href="{% url 'admin_panel:orders_list' %}" class="filter-btn {% if not status %}active{% endif %}">All</a>
+    <a href="?status=pending" class="filter-btn {% if status == 'pending' %}active{% endif %}">Pending</a>
+    <a href="?status=confirmed" class="filter-btn {% if status == 'confirmed' %}active{% endif %}">Confirmed</a>
+    <a href="?status=shipped" class="filter-btn {% if status == 'shipped' %}active{% endif %}">Shipped</a>
+    <a href="?status=delivered" class="filter-btn {% if status == 'delivered' %}active{% endif %}">Delivered</a>
+    <a href="?status=cancelled" class="filter-btn {% if status == 'cancelled' %}active{% endif %}">Cancelled</a>
+  </div>
+
+  {% if orders %}
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Order #</th>
+            <th>Buyer</th>
+            <th>Crop</th>
+            <th>Farmer</th>
+            <th>Qty (kg)</th>
+            <th>Total</th>
+            <th>Status</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for order in orders %}
+          <tr>
+            <td><strong>#{{ order.id }}</strong></td>
+            <td>{{ order.buyer.get_full_name|default:order.buyer.username }}</td>
+            <td>{{ order.crop.name }}</td>
+            <td>{{ order.crop.farmer.get_full_name|default:order.crop.farmer.username }}</td>
+            <td>{{ order.quantity_kg }}</td>
+            <td>₹{{ order.total_price }}</td>
+            <td><span class="status-badge status-{{ order.status }}">{{ order.get_status_display }}</span></td>
+            <td>{{ order.placed_on|date:"d M Y" }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="empty-state"><p>No orders found.</p></div>
+  {% endif %}
+</div>
+{% endblock %}

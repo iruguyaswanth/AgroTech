@@ -1,0 +1,34 @@
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.filter-btn.active {
+  background: var(--primary);
+  color: white;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+.data-table th,
+.data-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #e9eef4;
+}
+
+.stars-sm {
+  display: inline-flex;
+  gap: 0.1rem;
+}
+
+.star {
+  color: #d8d8d8;
+}
+
+.star.filled {
+  color: #ffb000;
+}

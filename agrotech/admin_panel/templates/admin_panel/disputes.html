@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Disputes – Admin{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'admin_panel/disputes.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="page-wrapper">
+  <div class="page-header">
+    <h2>Buyer–Farmer Disputes</h2>
+    <p>These are cancelled orders that may need attention.</p>
+  </div>
+
+  {% if disputes %}
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Order #</th>
+            <th>Buyer</th>
+            <th>Farmer</th>
+            <th>Crop</th>
+            <th>Qty (kg)</th>
+            <th>Total</th>
+            <th>Placed On</th>
+            <th>Note</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for order in disputes %}
+          <tr>
+            <td><strong>#{{ order.id }}</strong></td>
+            <td>{{ order.buyer.get_full_name|default:order.buyer.username }}<br><small>{{ order.buyer.email }}</small></td>
+            <td>{{ order.crop.farmer.get_full_name|default:order.crop.farmer.username }}<br><small>{{ order.crop.farmer.email }}</small></td>
+            <td>{{ order.crop.name }}</td>
+            <td>{{ order.quantity_kg }}</td>
+            <td>₹{{ order.total_price }}</td>
+            <td>{{ order.placed_on|date:"d M Y" }}</td>
+            <td>{{ order.note|default:"—"|truncatechars:50 }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <p>No disputes at the moment. Cancelled orders will show up here.</p>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

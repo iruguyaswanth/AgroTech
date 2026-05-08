@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Add Crop – AgroTech{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'farmers/add_crop.css' %}?v=1" />
+{% endblock %}
+
+{% block content %}
+<div class="page-wrapper narrow">
+  <div class="page-header">
+    <h2>Add a New Crop</h2>
+    <a href="{% url 'farmers:my_crops' %}" class="btn btn-outline-sm">← Back to My Crops</a>
+  </div>
+
+  <div class="form-card">
+    <form method="POST" enctype="multipart/form-data" class="main-form">
+      {% csrf_token %}
+
+      <div class="form-row two-col">
+        <div class="form-group">
+          <label>Crop / Product Name *</label>
+          <input type="text" name="name" placeholder="e.g. Fresh Tomatoes" required value="{{ form.name.value|default:'' }}" />
+          {% if form.name.errors %}<span class="field-error">{{ form.name.errors.0 }}</span>{% endif %}
+        </div>
+        <div class="form-group">
+          <label>Category *</label>
+          <select name="category" required>
+            {% for val, label in form.fields.category.choices %}
+              <option value="{{ val }}" {% if form.category.value == val %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Description *</label>
+        <textarea name="description" rows="4" placeholder="Describe your crop — quality, harvest date, how it was grown, etc." required>{{ form.description.value|default:'' }}</textarea>
+        {% if form.description.errors %}<span class="field-error">{{ form.description.errors.0 }}</span>{% endif %}
+      </div>
+
+      <div class="form-row two-col">
+        <div class="form-group">
+          <label>Price per kg (₹) *</label>
+          <input type="number" name="price_per_kg" step="0.01" min="0.01" placeholder="e.g. 45.00" required value="{{ form.price_per_kg.value|default:'' }}" />
+          {% if form.price_per_kg.errors %}<span class="field-error">{{ form.price_per_kg.errors.0 }}</span>{% endif %}
+        </div>
+        <div class="form-group">
+          <label>Available Quantity (kg) *</label>
+          <input type="number" name="quantity_kg" step="0.1" min="0.1" placeholder="e.g. 200" required value="{{ form.quantity_kg.value|default:'' }}" />
+          {% if form.quantity_kg.errors %}<span class="field-error">{{ form.quantity_kg.errors.0 }}</span>{% endif %}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Location *</label>
+        <input type="text" name="location" placeholder="Village / Taluk / District" required value="{{ form.location.value|default:'' }}" />
+        {% if form.location.errors %}<span class="field-error">{{ form.location.errors.0 }}</span>{% endif %}
+      </div>
+
+      <div class="form-group">
+        <label>Crop Image</label>
+        <input type="file" name="image" accept="image/*" />
+        <small>Upload a clear photo of your crop. Good photos get more orders.</small>
+      </div>
+
+      <div class="form-group checkbox-group">
+        <label>
+          <input type="checkbox" name="is_available" checked />
+          Mark as available for sale right now
+        </label>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-green">List My Crop</button>
+        <a href="{% url 'farmers:my_crops' %}" class="btn btn-outline">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

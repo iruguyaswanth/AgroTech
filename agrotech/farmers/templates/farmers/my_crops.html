@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}My Crops – AgroTech{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'farmers/my_crops.css' %}?v=4" />
+{% endblock %}
+
+{% block content %}
+<div class="page-wrapper">
+  <div class="page-header">
+    <h2>My Crop Listings</h2>
+    <a href="{% url 'farmers:add_crop' %}" class="btn btn-green">+ Add New Crop</a>
+  </div>
+
+  {% if crops %}
+    <div class="crop-grid">
+      {% for crop in crops %}
+      <div class="crop-card my-crop-card">
+        <div class="crop-img-wrap">
+          {% if crop.image %}
+            <img src="{{ crop.image.url }}" alt="{{ crop.name }}" class="crop-img" />
+          {% else %}
+            <div class="crop-img-placeholder">🌾</div>
+          {% endif %}
+          {% if not crop.is_available %}
+            <span class="unavailable-tag">Unavailable</span>
+          {% endif %}
+        </div>
+
+        <div class="crop-info">
+          <div class="crop-top-row">
+            <h4>{{ crop.name }}</h4>
+            <span class="category-tag">{{ crop.get_category_display }}</span>
+          </div>
+          <p class="crop-location">📍 {{ crop.location }}</p>
+          <div class="crop-price-row">
+            <strong class="crop-price">₹{{ crop.price_per_kg }}/kg</strong>
+            <span class="crop-qty">{{ crop.quantity_kg }} kg available</span>
+          </div>
+          <div class="crop-stats-mini">
+            <span>{{ crop.total_orders }} orders</span>
+            {% with avg=crop.average_rating %}
+              {% if avg %}<span>⭐ {{ avg }}</span>{% endif %}
+            {% endwith %}
+            <span>Listed {{ crop.created_on|date:"d M Y" }}</span>
+          </div>
+        </div>
+
+        <div class="crop-actions">
+          <a href="{% url 'farmers:edit_crop' crop.id %}" class="btn btn-outline-sm">Edit</a>
+          <a href="{% url 'farmers:delete_crop' crop.id %}" class="btn btn-red-sm">Delete</a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state big">
+      <div class="empty-icon">🌱</div>
+      <h3>No crops listed yet</h3>
+      <p>Start adding your fresh produce to reach buyers across the country.</p>
+      <a href="{% url 'farmers:add_crop' %}" class="btn btn-green">Add Your First Crop</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

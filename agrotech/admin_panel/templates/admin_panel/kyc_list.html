@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}KYC Requests – Admin{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'admin_panel/kyc_list.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="page-wrapper">
+  <div class="page-header">
+    <h2>KYC Verification Requests</h2>
+  </div>
+
+  <div class="filter-row">
+    <a href="?status=pending" class="filter-btn {% if status_filter == 'pending' %}active{% endif %}">Pending</a>
+    <a href="?status=approved" class="filter-btn {% if status_filter == 'approved' %}active{% endif %}">Approved</a>
+    <a href="?status=rejected" class="filter-btn {% if status_filter == 'rejected' %}active{% endif %}">Rejected</a>
+    <a href="?status=not_submitted" class="filter-btn {% if status_filter == 'not_submitted' %}active{% endif %}">Not Submitted</a>
+  </div>
+
+  {% if kyc_profiles %}
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Role</th>
+            <th>Email</th>
+            <th>Document Type</th>
+            <th>Submitted On</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for profile in kyc_profiles %}
+          <tr>
+            <td><strong>{{ profile.user.get_full_name|default:profile.user.username }}</strong></td>
+            <td><span class="role-tag role-{{ profile.role }}">{{ profile.get_role_display }}</span></td>
+            <td>{{ profile.user.email }}</td>
+            <td>{{ profile.kyc_document_type|default:"—" }}</td>
+            <td>{{ profile.kyc_submitted_on|date:"d M Y"|default:"—" }}</td>
+            <td><span class="status-badge status-{{ profile.kyc_status }}">{{ profile.get_kyc_status_display }}</span></td>
+            <td><a href="{% url 'admin_panel:kyc_detail' profile.id %}" class="btn btn-outline-sm">Review</a></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="empty-state"><p>No KYC requests with status "{{ status_filter }}".</p></div>
+  {% endif %}
+</div>
+{% endblock %}

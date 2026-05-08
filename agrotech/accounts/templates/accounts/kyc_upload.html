@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}KYC Verification – AgroTech{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'accounts/kyc_upload.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="page-wrapper narrow">
+  <div class="page-header">
+    <h2>KYC Verification</h2>
+    <p>Submit your identity document to get the Verified badge on your profile.</p>
+  </div>
+
+  <div class="info-box info-blue">
+    <strong>Why KYC?</strong>
+    Verified users get more trust from buyers and farmers. Your document is only seen by our admin team.
+  </div>
+
+  {% if profile.kyc_status == 'pending' %}
+    <div class="info-box info-yellow">
+      ⏳ Your KYC is currently under review. Submitted on {{ profile.kyc_submitted_on|date:"d M Y, h:i A" }}.
+    </div>
+  {% elif profile.kyc_status == 'rejected' %}
+    <div class="info-box info-red">
+      ❌ Previous KYC was rejected.
+      {% if profile.kyc_rejection_reason %}Reason: <strong>{{ profile.kyc_rejection_reason }}</strong>{% endif %}
+      Please upload again with a clearer document.
+    </div>
+  {% endif %}
+
+  <div class="form-card">
+    <form method="POST" enctype="multipart/form-data" class="main-form">
+      {% csrf_token %}
+
+      <div class="form-group">
+        <label>Document Type</label>
+        <select name="kyc_document_type" required>
+          <option value="">-- Select Document Type --</option>
+          <option value="aadhaar">Aadhaar Card</option>
+          <option value="pan">PAN Card</option>
+          <option value="voter_id">Voter ID</option>
+          <option value="passport">Passport</option>
+          <option value="driving_license">Driving License</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Upload Document Image</label>
+        <input type="file" name="kyc_document" accept="image/*,.pdf" required />
+        <small>Accepted formats: JPG, PNG, PDF. Max 5MB. Make sure the image is clear and readable.</small>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-green">Submit for Review</button>
+        <a href="{% url 'accounts:profile' %}" class="btn btn-outline">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

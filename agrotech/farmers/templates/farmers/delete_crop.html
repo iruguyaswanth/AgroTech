@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Delete Crop – AgroTech{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'farmers/delete_crop.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="page-wrapper narrow">
+  <div class="confirm-card">
+    <div class="confirm-icon">⚠️</div>
+    <h2>Delete This Crop?</h2>
+    <p>You are about to delete <strong>{{ crop.name }}</strong>. This action cannot be undone. All existing orders for this crop will also be affected.</p>
+
+    <div class="confirm-actions">
+      <form method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-red">Yes, Delete It</button>
+      </form>
+      <a href="{% url 'farmers:my_crops' %}" class="btn btn-outline">No, Keep It</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

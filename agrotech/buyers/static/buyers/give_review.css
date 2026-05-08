@@ -1,0 +1,99 @@
+.form-card {
+  padding: 1.5rem;
+}
+
+.star-rating-input {
+  display: flex;
+  justify-content: flex-start;
+  gap: 0.4rem;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+  flex-wrap: wrap;
+}
+
+.page-header h1,
+.page-header h2,
+.page-header h3 {
+  margin: 0;
+}
+
+.main-form .form-group {
+  margin-bottom: 1.5rem;
+}
+
+.main-form label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.main-form input,
+.main-form textarea,
+.main-form select {
+  width: 100%;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: 14px;
+  padding: 14px 16px;
+  background: #ffffff;
+  color: var(--text-dark);
+}
+
+.main-form textarea {
+  min-height: 140px;
+  resize: vertical;
+}
+
+.main-form input:focus,
+.main-form textarea:focus,
+.main-form select:focus {
+  outline: none;
+  border-color: rgba(37, 99, 235, 0.65);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+}
+
+.form-card {
+  padding: 1.5rem;
+}
+
+.star-rating-input {
+  display: flex;
+  justify-content: flex-start;
+  gap: 0.4rem;
+}
+
+.star-rating-input input[type="radio"] {
+  display: none;
+}
+
+.star-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  font-size: 1.45rem;
+  cursor: pointer;
+  transition: background .2s ease, color .2s ease;
+}
+
+.star-label:hover,
+.star-rating-input input[type="radio"]:checked + .star-label {
+  background: #ffde7a;
+  color: #8a6200;
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}

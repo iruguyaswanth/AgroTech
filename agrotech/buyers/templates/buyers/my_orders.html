@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}My Orders – AgroTech{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'buyers/my_orders.css' %}?v=2" />
+{% endblock %}
+
+{% block content %}
+<div class="page-wrapper">
+  <div class="page-header">
+    <h2>My Orders</h2>
+  </div>
+
+  {% if orders %}
+    <div class="orders-list">
+      {% for order in orders %}
+        <div class="order-row-card">
+          <div class="order-row-left">
+            {% if order.crop.image %}
+              <img src="{{ order.crop.image.url }}" alt="{{ order.crop.name }}" class="order-thumb" />
+            {% else %}
+              <div class="order-thumb-placeholder">🌾</div>
+            {% endif %}
+          </div>
+
+          <div class="order-row-info">
+            <h4>{{ order.crop.name }}</h4>
+            <p>by {{ order.crop.farmer.get_full_name|default:order.crop.farmer.username }}</p>
+            <p>{{ order.quantity_kg }} kg · ₹{{ order.total_price }}</p>
+            <p class="order-date">Ordered on {{ order.placed_on|date:"d M Y" }}</p>
+          </div>
+
+          <div class="order-row-right">
+            <span class="status-badge status-{{ order.status }}">{{ order.get_status_display }}</span>
+            <a href="{% url 'buyers:track_order' order.id %}" class="btn btn-outline-sm">Track Order</a>
+            {% if order.status == 'delivered' and not order.review %}
+              <a href="{% url 'buyers:give_review' order.id %}" class="btn btn-orange-sm">Write Review</a>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state big">
+      <div class="empty-icon">📦</div>
+      <h3>No orders yet</h3>
+      <p>Browse crops and place your first order.</p>
+      <a href="{% url 'buyers:home' %}" class="btn btn-green">Browse Crops</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

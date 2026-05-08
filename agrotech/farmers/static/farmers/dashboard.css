@@ -1,0 +1,51 @@
+.body{
+  background-color: rgb(60, 78, 72);
+}
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.dashboard-header h2{
+  color:greenyellow;
+}
+
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+}
+
+.stat-box {
+  padding: 1.25rem;
+  border-radius: 18px;
+  background: var(--surface);
+  border: 5px solid rgb(194, 234, 188);
+}
+
+.quick-nav-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+}
+
+.quick-nav-card {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem;
+  border-radius: 16px;
+  background: #f8fbff;
+  text-decoration: none;
+  color: inherit;
+}
+
+.qn-icon {
+  font-size: 1.35rem;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}

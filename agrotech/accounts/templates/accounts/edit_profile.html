@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Edit Profile – AgroTech{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'accounts/edit_profile.css' %}?v=4" />
+{% endblock %}
+
+{% block content %}
+<div class="page-wrapper narrow">
+  <div class="page-header">
+    <h2>Edit Profile</h2>
+    <a href="{% url 'accounts:profile' %}" class="btn btn-outline-sm">← Back</a>
+  </div>
+
+  <div class="form-card">
+    <form method="POST" enctype="multipart/form-data" class="main-form">
+      {% csrf_token %}
+
+      <div class="form-row two-col">
+        <div class="form-group">
+          <label>First Name</label>
+          <input type="text" name="first_name" value="{{ form.initial.first_name }}" placeholder="First name" />
+        </div>
+        <div class="form-group">
+          <label>Last Name</label>
+          <input type="text" name="last_name" value="{{ form.initial.last_name }}" placeholder="Last name" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Phone Number</label>
+        <input type="text" name="phone" value="{{ form.instance.phone }}" placeholder="Phone number" />
+      </div>
+
+      <div class="form-group">
+        <label>Address</label>
+        <textarea name="address" rows="3" placeholder="Your address">{{ form.instance.address }}</textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Profile Photo</label>
+        {% if form.instance.profile_photo %}
+          <div class="current-photo">
+            <img src="{{ form.instance.profile_photo.url }}" alt="Current Photo" style="width:80px;height:80px;border-radius:50%;object-fit:cover;" />
+            <span>Current photo</span>
+          </div>
+        {% endif %}
+        <input type="file" name="profile_photo" accept="image/*" />
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-green">Save Changes</button>
+        <a href="{% url 'accounts:profile' %}" class="btn btn-outline">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

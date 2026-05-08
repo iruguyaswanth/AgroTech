@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Manage Users – Admin{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'admin_panel/users_list.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="page-wrapper">
+  <div class="page-header">
+    <h2>Manage Users</h2>
+  </div>
+
+  <div class="filter-row">
+    <a href="{% url 'admin_panel:users_list' %}" class="filter-btn {% if not role %}active{% endif %}">All</a>
+    <a href="?role=farmer" class="filter-btn {% if role == 'farmer' %}active{% endif %}">Farmers</a>
+    <a href="?role=buyer" class="filter-btn {% if role == 'buyer' %}active{% endif %}">Buyers</a>
+  </div>
+
+  {% if users %}
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>KYC</th>
+            <th>Verified</th>
+            <th>Joined</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for profile in users %}
+          <tr class="{% if profile.is_blocked %}row-blocked{% endif %}">
+            <td><strong>{{ profile.user.get_full_name|default:profile.user.username }}</strong></td>
+            <td>{{ profile.user.email }}</td>
+            <td><span class="role-tag role-{{ profile.role }}">{{ profile.get_role_display }}</span></td>
+            <td><span class="status-badge status-{{ profile.kyc_status }}">{{ profile.get_kyc_status_display }}</span></td>
+            <td>{% if profile.is_verified %}✅{% else %}—{% endif %}</td>
+            <td>{{ profile.joined_on|date:"d M Y" }}</td>
+            <td>
+              {% if profile.is_blocked %}
+                <span class="status-badge status-cancelled">Blocked</span>
+              {% else %}
+                <span class="status-badge status-delivered">Active</span>
+              {% endif %}
+            </td>
+            <td>
+              <a href="{% url 'admin_panel:toggle_block' profile.user.id %}"
+                 class="btn {% if profile.is_blocked %}btn-green-sm{% else %}btn-red-sm{% endif %}"
+                 onclick="return confirm('Are you sure?')">
+                {% if profile.is_blocked %}Activate{% else %}Block{% endif %}
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="empty-state"><p>No users found.</p></div>
+  {% endif %}
+</div>
+{% endblock %}

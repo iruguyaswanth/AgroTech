@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Farmer Dashboard – AgroTech{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'farmers/dashboard.css' %}?v=6" />
+{% endblock %}
+
+{% block content %}
+<div class="page-wrapper">
+
+  <div class="dashboard-header">
+    <div>
+      <h2>Good day, {{ user.first_name|default:user.username }} 👋</h2>
+      <p>Here's a summary of your farm activity on AgroTech.</p>
+    </div>
+    <a href="{% url 'farmers:add_crop' %}" class="btn btn-green">+ Add New Crop</a>
+  </div>
+
+  <!-- KYC Notice -->
+  {% if not profile.is_verified %}
+    <div class="info-box info-orange">
+      🔔 Your KYC is not verified yet.
+      {% if profile.kyc_status == 'not_submitted' %}
+        <a href="{% url 'accounts:kyc_upload' %}">Submit your KYC</a> to earn the Verified badge and gain more buyer trust.
+      {% elif profile.kyc_status == 'pending' %}
+        Your KYC is under review. We'll update you within 48 hours.
+      {% elif profile.kyc_status == 'rejected' %}
+        Your KYC was rejected. <a href="{% url 'accounts:kyc_upload' %}">Resubmit your documents.</a>
+      {% endif %}
+    </div>
+  {% endif %}
+
+  <!-- Stats Row -->
+  <div class="stats-row">
+    <div class="stat-box stat-blue">
+      <div class="stat-number">{{ total_crops }}</div>
+      <div class="stat-label">Total Listings</div>
+    </div>
+    <div class="stat-box stat-green">
+      <div class="stat-number">{{ active_crops }}</div>
+      <div class="stat-label">Active Listings</div>
+    </div>
+    <div class="stat-box stat-orange">
+      <div class="stat-number">{{ total_orders }}</div>
+      <div class="stat-label">Total Orders</div>
+    </div>
+    <div class="stat-box stat-yellow">
+      <div class="stat-number">{{ pending_orders }}</div>
+      <div class="stat-label">Pending Orders</div>
+    </div>
+    <div class="stat-box stat-purple">
+      <div class="stat-number">{{ delivered_orders }}</div>
+      <div class="stat-label">Delivered</div>
+    </div>
+    <div class="stat-box stat-teal">
+      <div class="stat-number">₹{{ total_earnings }}</div>
+      <div class="stat-label">Total Earnings</div>
+    </div>
+  </div>
+
+  <!-- Recent Orders Table -->
+  <div class="section-card">
+    <div class="section-card-header">
+      <h3>Recent Orders</h3>
+      <a href="{% url 'farmers:orders' %}" class="link-more">View All →</a>
+    </div>
+
+    {% if recent_orders %}
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Order #</th>
+              <th>Buyer</th>
+              <th>Crop</th>
+              <th>Qty (kg)</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th>Date</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for order in recent_orders %}
+            <tr>
+              <td>#{{ order.id }}</td>
+              <td>{{ order.buyer.get_full_name|default:order.buyer.username }}</td>
+              <td>{{ order.crop.name }}</td>
+              <td>{{ order.quantity_kg }}</td>
+              <td>₹{{ order.total_price }}</td>
+              <td><span class="status-badge status-{{ order.status }}">{{ order.get_status_display }}</span></td>
+              <td>{{ order.placed_on|date:"d M Y" }}</td>
+              <td><a href="{% url 'farmers:update_order' order.id %}" class="link-action">Update</a></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <p>No orders yet. Your orders from buyers will appear here.</p>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Quick Links -->
+  <div class="quick-nav-row">
+    <a href="{% url 'farmers:my_crops' %}" class="quick-nav-card">
+      <span class="qn-icon">🌱</span>
+      <span>My Crops</span>
+    </a>
+    <a href="{% url 'farmers:orders' %}" class="quick-nav-card">
+      <span class="qn-icon">📦</span>
+      <span>All Orders</span>
+    </a>
+    <a href="{% url 'farmers:earnings' %}" class="quick-nav-card">
+      <span class="qn-icon">💰</span>
+      <span>Earnings</span>
+    </a>
+    <a href="{% url 'farmers:reviews' %}" class="quick-nav-card">
+      <span class="qn-icon">⭐</span>
+      <span>Reviews</span>
+    </a>
+  </div>
+
+</div>
+{% endblock %}

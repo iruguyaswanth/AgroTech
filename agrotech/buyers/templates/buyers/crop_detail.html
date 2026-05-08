@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ crop.name }} – AgroTech{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'buyers/crop_detail.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="page-wrapper">
+
+  <div class="crop-detail-layout">
+
+    <!-- Left: Crop Image -->
+    <div class="crop-detail-image-wrap">
+      {% if crop.image %}
+        <img src="{{ crop.image.url }}" alt="{{ crop.name }}" class="crop-detail-image" />
+      {% else %}
+        <div class="crop-detail-placeholder">🌾</div>
+      {% endif %}
+    </div>
+
+    <!-- Right: Info + Actions -->
+    <div class="crop-detail-info">
+
+      <div class="crop-detail-top">
+        <span class="category-tag">{{ crop.get_category_display }}</span>
+        {% if crop.farmer.profile.is_verified %}
+          <span class="verified-badge-sm">✔ Verified Farmer</span>
+        {% endif %}
+      </div>
+
+      <h1>{{ crop.name }}</h1>
+
+      <div class="farmer-row">
+        <p>Sold by <strong>{{ crop.farmer.get_full_name|default:crop.farmer.username }}</strong></p>
+        <p class="crop-location">📍 {{ crop.location }}</p>
+      </div>
+
+      {% if avg_rating %}
+        <div class="rating-row">
+          <div class="stars">
+            {% for i in "12345" %}
+              <span class="star {% if forloop.counter <= avg_rating %}filled{% endif %}">★</span>
+            {% endfor %}
+          </div>
+          <span>{{ avg_rating }} ({{ crop.reviews.count }} review{{ crop.reviews.count|pluralize }})</span>
+        </div>
+      {% endif %}
+
+      <div class="price-qty-row">
+        <div class="price-box">
+          <span class="price-label">Price per kg</span>
+          <span class="price-value">₹{{ crop.price_per_kg }}</span>
+        </div>
+        <div class="price-box">
+          <span class="price-label">Available</span>
+          <span class="price-value">{{ crop.quantity_kg }} kg</span>
+        </div>
+      </div>
+
+      <div class="crop-description">
+        <h4>About this Crop</h4>
+        <p style="color:white">{{ crop.description }}</p>
+      </div>
+
+      <!-- Action Buttons -->
+      {% if user.is_authenticated and user.profile.role == 'buyer' %}
+        <div class="detail-actions">
+          <a href="{% url 'buyers:place_order' crop.id %}" class="btn btn-green btn-lg">Buy Now</a>
+
+          <form method="POST" action="{% url 'buyers:add_to_cart' crop.id %}" style="display:inline;">
+            {% csrf_token %}
+            <input type="hidden" name="quantity" value="1" />
+            <button type="submit" class="btn btn-orange btn-lg">Add to Cart</button>
+          </form>
+
+          <a style="color:white" href="{% url 'buyers:toggle_wishlist' crop.id %}" class="btn btn-outline btn-lg">
+            {% if in_wishlist %}❤️ Wishlisted{% else %}🤍 Wishlist{% endif %}
+          </a>
+        </div>
+      {% elif not user.is_authenticated %}
+        <div class="detail-actions">
+          <a href="{% url 'accounts:login' %}" class="btn btn-green btn-lg">Login to Buy</a>
+        </div>
+      {% endif %}
+
+      <!-- Farmer Info -->
+      <div class="farmer-info-box">
+        <h4 style="color:black">About the Farmer</h4>
+        <p>{{ crop.farmer.get_full_name|default:crop.farmer.username }}</p>
+        {% if crop.farmer.profile.phone %}
+          <p>📞 {{ crop.farmer.profile.phone }}</p>
+        {% endif %}
+        <p>📅 Member since {{ crop.farmer.profile.joined_on|date:"M Y" }}</p>
+        {% if crop.farmer.profile.is_verified %}
+          <p>✔ KYC Verified</p>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Reviews Section -->
+  <div class="section-card reviews-section">
+    <h3>Customer Reviews ({{ reviews.count }})</h3>
+
+    {% if reviews %}
+      <div class="reviews-list">
+        {% for review in reviews %}
+          <div class="review-card">
+            <div class="review-top">
+              <strong>{{ review.buyer.get_full_name|default:review.buyer.username }}</strong>
+              <div class="stars">
+                {% for i in "12345" %}
+                  <span class="star {% if forloop.counter <= review.rating %}filled{% endif %}">★</span>
+                {% endfor %}
+              </div>
+              <span class="review-date">{{ review.created_on|date:"d M Y" }}</span>
+            </div>
+            {% if review.comment %}
+              <p class="review-comment">{{ review.comment }}</p>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="empty-text">No reviews yet. Be the first to buy and review!</p>
+    {% endif %}
+  </div>
+
+</div>
+{% endblock %}

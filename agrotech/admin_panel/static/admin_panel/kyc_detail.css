@@ -1,0 +1,30 @@
+.order-detail-card {
+  padding: 1.5rem;
+  border-radius: 18px;
+  background: var(--surface);
+  box-shadow: var(--shadow-soft);
+}
+
+.order-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.label {
+  margin: 0 0 0.4rem;
+  display: block;
+  color: var(--text-muted);
+}
+
+.value {
+  margin: 0;
+  color: var(--text-dark);
+  word-break: break-word;
+}
+
+.kyc-decision-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}

@@ -1,0 +1,32 @@
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.filter-btn.active {
+  background: var(--primary);
+  color: white;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table th,
+.data-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #eceff3;
+}
+
+.row-blocked {
+  opacity: 0.8;
+}
+
+.role-tag {
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
+  background: #f0f6ff;
+}

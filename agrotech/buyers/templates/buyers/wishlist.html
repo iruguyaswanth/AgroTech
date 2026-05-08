@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}My Wishlist – AgroTech{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'buyers/wishlist.css' %}?v=8" />
+{% endblock %}
+
+{% block content %}
+<div class="page-wrapper">
+  <div class="page-header">
+    <h2>My Wishlist</h2>
+  </div>
+
+  {% if wishlist %}
+    <div class="crop-grid">
+      {% for item in wishlist %}
+        <a href="{% url 'buyers:crop_detail' item.crop.id %}" class="crop-card-link">
+          <div class="crop-card">
+            <div class="crop-img-wrap">
+              {% if item.crop.image %}
+                <img src="{{ item.crop.image.url }}" alt="{{ item.crop.name }}" class="crop-img" />
+              {% else %}
+                <div class="crop-img-placeholder">🌾</div>
+              {% endif %}
+            </div>
+            <div class="crop-info">
+              <h4>{{ item.crop.name }}</h4>
+              <p>by {{ item.crop.farmer.get_full_name|default:item.crop.farmer.username }}</p>
+              <p class="crop-location">📍 {{ item.crop.location }}</p>
+              <div class="crop-bottom-row">
+                <strong class="crop-price">₹{{ item.crop.price_per_kg }}/kg</strong>
+              </div>
+              <div class="crop-actions" style="margin-top: 10px;">
+                <a href="{% url 'buyers:toggle_wishlist' item.crop.id %}" class="btn btn-red-sm" onclick="event.preventDefault(); event.stopPropagation(); this.closest('form') ? this.closest('form').submit() : window.location='{% url 'buyers:toggle_wishlist' item.crop.id %}';">❤️ Remove</a>
+              </div>
+            </div>
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state big">
+      <div class="empty-icon">❤️</div>
+      <h3>Your wishlist is empty</h3>
+      <p>Browse crops and tap the heart icon to save your favorites.</p>
+      <a href="{% url 'buyers:home' %}" class="btn btn-green">Browse Crops</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}
